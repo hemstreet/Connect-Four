@@ -1,0 +1,129 @@
+<!--
+
+Connect 4 Game in JS:
+
+Guidelines / Rules:
+- Before you start, send me a time estimate
+- Get the game to a working state
+- Polish UI/UX as much as possible
+- Make it fill the entire screen
+- Make it responsive down to mobile
+- (theres more on the html as comments)
+
+Bonus (totally optional):
+- Add falling animation (circles falling down)
+- AI for User vs AI games
+- Add a "Game Over" screen
+- Track score, making it persistent (w/o a backend)
+- use only ES6
+
+-->
+
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Connect 4</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.2/normalize.min.css">
+    <style type="text/css" media="all">
+        #main {
+            background-color: blue;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            overflow: hidden;
+        }
+
+        .item {
+            border-radius: 55px;
+            background-color: #fff;
+            width: 40px;
+            height: 40px;
+            float: left;
+            border: 5px solid blue;
+        }
+
+        .item.active {
+        }
+
+        .item.red {
+            background-color: #ff0000;
+        }
+
+        .item.yellow {
+            background-color: yellow;
+        }
+
+        .row-0 {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div id="main">
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.2/underscore-min.js"></script>
+<script type="text/javascript" charset="utf-8">
+    /**
+     *   Description
+     *
+     * you are to finalize the current code, the end goal is a fully functional connect-four game
+     * while documenting each of your steps commiting this to an either public or private git repo
+     * (which you need to make available to the reviewer), the game should be a user vs user game on which
+     * you click a column and drops a coin, first to click is yellow
+     *
+     * (Reference: http://en.wikipedia.org/wiki/Connect_Four_
+     **/
+    /**
+     *   Rules
+     *
+     * - assume modern browsers
+     * - only use available tools already in this file (normalize.css, jquery, underscore)
+     * - you can optimize or replace existing code
+     * - commit as often as you would normally
+     **/
+    var connectFour = {
+        tableSize : [ 7, 6 ],
+        lastMovedBy : false,
+        currentPlayer : false,
+
+        dropCircle : function ( colIndex ) {
+            lastMovedBy = currentPlayer;
+            currentPlayer = !currentPlayer;
+            var pos = 0; // start your way from here
+            $( '.item.col-' + colIndex + '.row-' + pos ).addClass( (currentPlayer ? 'yellow' : 'red') );
+            tryToGameOver( colIndex, pos );
+        },
+        tryToGameOver : function ( col, row ) {
+        },
+        gameOver : function () {
+            var winner = (lastMovedBy) ? 'yellow' : 'red';
+            console.log( 'Winner: ' + winner );
+        },
+        createConnectCircle : function ( colIndex, rowIndex ) {
+            var item = $( '<div>' ).addClass( 'item' ).addClass( 'col-' + colIndex ).addClass( 'row-' + rowIndex );
+            if ( rowIndex === 0 ) {
+                item.bind( 'click', clickHandler );
+            }
+            return item;
+        },
+        clickHandler : function ( event ) {
+            event.preventDefault();
+            var colIndex = $( this ).prop( 'class' ).split( ' ' )[ 1 ].split( '-' ).reverse()[ 0 ];
+            colIndex = parseInt( colIndex, 10 );
+            dropCircle( colIndex );
+        }
+
+    };
+
+    _( tableSize[ 1 ] ).times( function ( rowIndex ) {
+        _( tableSize[ 0 ] ).times( function ( colIndex ) {
+            $( '#main' ).append( connectFour.createConnectCircle( colIndex, rowIndex ) );
+        } );
+    } );
+</script>
+</body>
+</html>
