@@ -39,6 +39,7 @@
 </head>
 <body>
 <div id="main"></div>
+<a href="#" class="reset-game">Reset Game</a>
 <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>-->
 <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.2/underscore-min.js"></script>-->
 
@@ -56,14 +57,18 @@
                 // Generate Game board
                 this.generatePositions();
                 this.buildGameBoard();
+                $('.reset-game' ).on('click', function(e){
+                    e.preventDefault();
+                    connectFour.resetBoard();
+                });
             },
             generatePositions : function () {
 
-                for ( var i = 0; i < this.tableSize[ 0 ]; i++ ) {
+                for ( var i = 0; i < this.tableSize[ 1 ]; i++ ) {
 
                     this.positions[ i ] = [];
 
-                    for ( var x = 0; x < this.tableSize[ 1 ]; x++ ) {
+                    for ( var x = 0; x < this.tableSize[ 0 ]; x++ ) {
                         this.positions[ i ][ x ] = 0;
                     }
                 }
@@ -76,12 +81,11 @@
                 } );
             },
             createConnectCircle : function ( colIndex, rowIndex ) {
-                var item = $( '<div>' ).addClass( 'item' ).attr( 'data-col', colIndex ).attr( 'data-row', rowIndex );
-//                var item = $( '<div>' ).addClass( 'item' ).addClass( 'col-' + colIndex ).addClass( 'row-' + rowIndex );
-//                if ( rowIndex === 0 ) {
-                    item.bind( 'click', this.clickHandler );
-//                }
-                return item;
+                return $( '<div>' )
+                        .addClass( 'item' )
+                        .attr( 'data-col', colIndex )
+                        .attr( 'data-row', rowIndex )
+                        .bind( 'click', this.clickHandler );
             },
 //            dropCircle : function ( colIndex ) {
 //                this.lastMovedBy = this.currentPlayer;
@@ -105,12 +109,32 @@
             clickHandler : function ( event ) {
                 event.preventDefault();
 
-                console.log( $( this ).attr('data-row' ), $( this ).attr('data-col' ) );
-                console.log(this.currentPlayer);
-                $(this ).addClass('red');
-//                var $colIndex = $( this ).prop( 'class' ).split( ' ' )[ 1 ].split( '-' ).reverse()[ 0 ];
-//                $colIndex = parseInt( $colIndex, 10 );
-//                connectFour.dropCircle( $colIndex );
+                var col = $( this ).attr( 'data-col' );
+
+                console.log(col);
+
+                for(var i = connectFour.tableSize[1] -1; i >= 0; i--) {
+
+                    var $slot = $('[data-col="' + col + '"][data-row="' + i + '"]' );
+
+                    if(connectFour.positions[0][col] !== 0) {
+                        console.log('invalid move');
+                        break;
+                    }
+                    if(connectFour.positions[i][col] == 0) {
+                        $slot.addClass(connectFour.currentPlayer);
+                        connectFour.positions[i][col] = connectFour.currentPlayer;
+
+                        connectFour.currentPlayer = connectFour.currentPlayer == 'yellow' ? 'red' : 'yellow';
+
+                        console.log(i);
+                        if(i == 0) {
+                            connectFour.checkTie();
+                        }
+
+                        break;
+                    }
+                }
             },
             checkHorizontal : function ( col, row ) {
 
@@ -137,6 +161,28 @@
                 console.log( col + 2, row + 2 );
                 console.log( col + 3, row + 3 );
                 console.log( col + 4, row + 4 );
+            },
+            checkTie: function() {
+
+                var isTie = true;
+
+                _(this.positions ).every(function(i) {
+                    if(i.indexOf(0) > -1) {
+                        isTie = false;
+                        return;
+                    }
+                });
+
+                if(isTie) {
+                    $('body' ).addClass('tie-game');
+                    this.resetBoard();
+                }
+
+            },
+            resetBoard: function() {
+                $( '#main' ).remove();
+                $('<div id="main">' ).prependTo($('body'));
+                connectFour.init();
             }
         };
 
