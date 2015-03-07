@@ -21,6 +21,10 @@
             border: 5px solid blue;
         }
 
+        .item:hover {
+            cursor: pointer;
+        }
+
         .item.active {
         }
 
@@ -32,9 +36,6 @@
             background-color: yellow;
         }
 
-        .row-0 {
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
@@ -55,44 +56,36 @@
 
             init : function () {
                 // Generate Game board
-                this.generatePositions();
                 this.buildGameBoard();
-                $('.reset-game' ).on('click', function(e){
+
+                // Setup reset game button
+                $( '.reset-game' ).on( 'click', function ( e ) {
                     e.preventDefault();
                     connectFour.resetBoard();
-                });
-            },
-            generatePositions : function () {
-
-                for ( var i = 0; i < this.tableSize[ 1 ]; i++ ) {
-
-                    this.positions[ i ] = [];
-
-                    for ( var x = 0; x < this.tableSize[ 0 ]; x++ ) {
-                        this.positions[ i ][ x ] = 0;
-                    }
-                }
+                } );
             },
             buildGameBoard : function () {
-                _( this.tableSize[ 1 ] ).times( function ( rowIndex ) {
-                    _( connectFour.tableSize[ 0 ] ).times( function ( colIndex ) {
-                        $( '#main' ).append( connectFour.createConnectCircle( colIndex, rowIndex ) );
+                _( this.tableSize[ 1 ] ).times( function ( row ) {
+                    connectFour.positions[ row ] = [];
+                    _( connectFour.tableSize[ 0 ] ).times( function ( col ) {
+                        $( '#main' ).append( connectFour.createConnectCircle( col, row ) );
+                        connectFour.positions[ row ][ col ] = 0;
                     } );
                 } );
             },
-            createConnectCircle : function ( colIndex, rowIndex ) {
+            createConnectCircle : function ( col, row ) {
                 return $( '<div>' )
                         .addClass( 'item' )
-                        .attr( 'data-col', colIndex )
-                        .attr( 'data-row', rowIndex )
+                        .attr( 'data-col', col )
+                        .attr( 'data-row', row )
                         .bind( 'click', this.clickHandler );
             },
-//            dropCircle : function ( colIndex ) {
+//            dropCircle : function ( col ) {
 //                this.lastMovedBy = this.currentPlayer;
 //                this.currentPlayer = !this.currentPlayer;
 //                var pos = 0; // start your way from here
-//                $( '.item.col-' + colIndex + '.row-' + pos ).addClass( (this.currentPlayer ? 'yellow' : 'red') );
-//                this.tryToGameOver( colIndex, pos );
+//                $( '.item.col-' + col + '.row-' + pos ).addClass( (this.currentPlayer ? 'yellow' : 'red') );
+//                this.tryToGameOver( col, pos );
 //            },
 //
 //            tryToGameOver : function ( col, row ) {
@@ -111,24 +104,24 @@
 
                 var col = $( this ).attr( 'data-col' );
 
-                console.log(col);
+                for ( var row = connectFour.tableSize[ 1 ] - 1; row >= 0; row-- ) {
 
-                for(var i = connectFour.tableSize[1] -1; i >= 0; i--) {
+                    var $slot = $( '[data-col="' + col + '"][data-row="' + row + '"]' );
 
-                    var $slot = $('[data-col="' + col + '"][data-row="' + i + '"]' );
-
-                    if(connectFour.positions[0][col] !== 0) {
-                        console.log('invalid move');
+                    if ( connectFour.positions[ 0 ][ col ] !== 0 ) {
+                        console.log( 'invalid move' );
                         break;
                     }
-                    if(connectFour.positions[i][col] == 0) {
-                        $slot.addClass(connectFour.currentPlayer);
-                        connectFour.positions[i][col] = connectFour.currentPlayer;
+                    if ( connectFour.positions[ row ][ col ] == 0 ) {
+                        $slot.addClass( connectFour.currentPlayer );
+                        connectFour.positions[ row ][ col ] = connectFour.currentPlayer;
+
+                        connectFour.checkHorizontal( row );
+                        connectFour.checkVertical( col );
 
                         connectFour.currentPlayer = connectFour.currentPlayer == 'yellow' ? 'red' : 'yellow';
 
-                        console.log(i);
-                        if(i == 0) {
+                        if ( row == 0 ) {
                             connectFour.checkTie();
                         }
 
@@ -136,52 +129,96 @@
                     }
                 }
             },
-            checkHorizontal : function ( col, row ) {
+            checkHorizontal : function ( row ) {
 
-                console.log( 'check row ' + row );
-                console.log( 'check row ' + row + 1 );
-                console.log( 'check row ' + row + 2 );
-                console.log( 'check row ' + row + 3 );
-                console.log( 'check row ' + row + 4 );
+                // No possible winner if the 4th column is empty
+                if ( connectFour.positions[ row ][ 3 ] !== 0 ) {
+
+                    var count = {
+                        'red' : '',
+                        'yellow' : '',
+                        0 : ''
+                    };
+
+                    for ( var col = 0; col < this.tableSize[ 0 ]; col++ ) {
+
+                        count[ connectFour.positions[ row ][ col ] ] += col + ',';
+
+                    }
+
+                    this.checkObjectForWinner( count );
+                }
 
             },
-            checkVertical : function ( col, row ) {
+            checkVertical : function ( col ) {
 
-                console.log( 'check col ' + col );
-                console.log( 'check col ' + col + 1 );
-                console.log( 'check col ' + col + 2 );
-                console.log( 'check col ' + col + 3 );
-                console.log( 'check col ' + col + 4 );
+                // No possible winner if the 4th column is empty
+                if ( connectFour.positions[ 3 ][ col ] !== 0 ) {
+
+                    var count = {
+                        'red' : '',
+                        'yellow' : '',
+                        0 : ''
+                    };
+
+                    for ( var row = 0; row < this.tableSize[ 1 ]; row++ ) {
+
+                        count[ connectFour.positions[ row ][ col ] ] += row + ',';
+
+                    }
+
+                    this.checkObjectForWinner( count );
+                }
+
 
             },
             checkDiagonal : function ( col, row ) {
-                console.log( 'check diagonal' );
-                console.log( col, row );
-                console.log( col + 1, row + 1 );
-                console.log( col + 2, row + 2 );
-                console.log( col + 3, row + 3 );
-                console.log( col + 4, row + 4 );
+
             },
-            checkTie: function() {
+            checkObjectForWinner : function ( obj ) {
+
+                _.each( obj, function ( str, i ) {
+
+                    // Lets get an array to count
+                    var pieces = str.split( ',' );
+
+
+                    // Drop the last element, its the trailing , from the check
+                    pieces.pop();
+
+                    if ( (i == 'yellow' || i == 'red') && pieces.length >= 4 ) {
+                        console.log( 'possible winner' );
+                    }
+
+                } );
+
+            },
+            checkTie : function () {
 
                 var isTie = true;
 
-                _(this.positions ).every(function(i) {
-                    if(i.indexOf(0) > -1) {
+                _( this.positions ).every( function ( i ) {
+                    if ( i.indexOf( 0 ) > -1 ) {
                         isTie = false;
-                        return;
+                        return false;
                     }
-                });
+                } );
 
-                if(isTie) {
-                    $('body' ).addClass('tie-game');
+                if ( isTie ) {
+                    $( 'body' ).addClass( 'tie-game' );
                     this.resetBoard();
                 }
 
             },
-            resetBoard: function() {
+            resetBoard : function () {
+
                 $( '#main' ).remove();
-                $('<div id="main">' ).prependTo($('body'));
+
+                var body = $( 'body' );
+
+                body.removeClass( 'tie-game' );
+                $( '<div id="main">' ).prependTo( body );
+
                 connectFour.init();
             }
         };
