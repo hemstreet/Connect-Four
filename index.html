@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <title>Connect 4</title>
-    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.2/normalize.min.css">-->
-    <link rel="stylesheet" href="local/normalize.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.2/normalize.min.css">
+    <!--<link rel="stylesheet" href="local/normalize.min.css">-->
     <style type="text/css" media="all">
         #main {
             background-color: blue;
@@ -41,20 +41,20 @@
 <body>
 <div id="main"></div>
 <a href="#" class="reset-game">Reset Game</a>
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>-->
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.2/underscore-min.js"></script>-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.2/underscore-min.js"></script>
 
-<script src="local/jquery.min.js"></script>
-<script src="local/underscore-min.js"></script>
+<!--<script src="local/jquery.min.js"></script>-->
+<!--<script src="local/underscore-min.js"></script>-->
 <script type="text/javascript" charset="utf-8">
     (function ( $ ) {
         var connectFour = {
             tableSize : [ 7, 6 ],
-            lastMovedBy : false,
             currentPlayer : 'yellow',
             positions : [],
 
             init : function () {
+
                 // Generate Game board
                 this.buildGameBoard();
 
@@ -80,29 +80,10 @@
                         .attr( 'data-row', row )
                         .bind( 'click', this.clickHandler );
             },
-//            dropCircle : function ( col ) {
-//                this.lastMovedBy = this.currentPlayer;
-//                this.currentPlayer = !this.currentPlayer;
-//                var pos = 0; // start your way from here
-//                $( '.item.col-' + col + '.row-' + pos ).addClass( (this.currentPlayer ? 'yellow' : 'red') );
-//                this.tryToGameOver( col, pos );
-//            },
-//
-//            tryToGameOver : function ( col, row ) {
-//                this.checkHorizontal(col, row);
-//                this.checkVertical(col, row);
-//                this.checkDiagonal(col, row);
-//            },
-//
-//            gameOver : function () {
-//                var winner = (this.lastMovedBy) ? 'yellow' : 'red';
-//                $('body' ).addClass('winner-' + winner);
-//                console.log( 'Winner: ' + winner );
-//            },
             clickHandler : function ( event ) {
                 event.preventDefault();
 
-                var col = $( this ).attr( 'data-col' );
+                var col = parseInt($( this ).attr( 'data-col' ));
 
                 for ( var row = connectFour.tableSize[ 1 ] - 1; row >= 0; row-- ) {
 
@@ -118,6 +99,7 @@
 
                         connectFour.checkHorizontal( row );
                         connectFour.checkVertical( col );
+                        connectFour.checkDiagonal( row, col );
 
                         connectFour.currentPlayer = connectFour.currentPlayer == 'yellow' ? 'red' : 'yellow';
 
@@ -132,7 +114,7 @@
             checkHorizontal : function ( row ) {
 
                 // No possible winner if the 4th column is empty
-                if ( connectFour.positions[ row ][ 3 ] !== 0 ) {
+//                if ( connectFour.positions[ row ][ 3 ] !== 0 ) {
 
                     var count = {
                         'red' : '',
@@ -146,14 +128,16 @@
 
                     }
 
+//                    console.log(count);
                     this.checkObjectForWinner( count );
-                }
+//                }
 
             },
             checkVertical : function ( col ) {
 
+
                 // No possible winner if the 4th column is empty
-                if ( connectFour.positions[ 3 ][ col ] !== 0 ) {
+//                if ( connectFour.positions[ 3 ][ col ] !== 0 ) {
 
                     var count = {
                         'red' : '',
@@ -167,14 +151,74 @@
 
                     }
 
+
+//                    console.log(count);
                     this.checkObjectForWinner( count );
+//                }
+
+            },
+            checkDiagonal : function (row, col) {
+                var bounds = 8,
+                    topLeft = {
+                        'red' : '',
+                        'yellow' : '',
+                        0 : ''
+                    },
+                    topRight = {
+                        'red' : '',
+                        'yellow' : '',
+                        0 : ''
+                    };
+
+                for(var x = 0; x < this.tableSize[0]; x++) {
+
+                    for(var y = 0; y < this.tableSize[1]; y++) {
+
+                        // Check top left diagonal
+                        for (var i = 0; i < bounds; i++) {
+
+                            // Bounds check
+                            if(this.positions[x + i] == undefined || this.positions[x + i][y + i] == undefined) {
+                                break;
+                            }
+
+                            topLeft[ connectFour.positions[ x + i ][ y + i ] ] += ( x + i ) + ',';
+
+                        }
+
+                        this.checkObjectForWinner(topLeft);
+
+                        topLeft = {
+                            'red' : '',
+                            'yellow' : '',
+                            0 : ''
+                        };
+
+                        for (var i = 0; i < bounds; i++) {
+
+                            // Bounds check
+                            if(this.positions[x - i] == undefined || this.positions[x - i][y + i] == undefined) {
+                                break;
+                            }
+
+                            topRight[ connectFour.positions[ x + -i ][ y + i ] ] += ( x + -i ) + ',';
+
+                        }
+
+                        this.checkObjectForWinner(topRight);
+
+                        topRight = {
+                            'red' : '',
+                            'yellow' : '',
+                            0 : ''
+                        };
+
+                    }
+
                 }
 
-
             },
-            checkDiagonal : function ( col, row ) {
 
-            },
             checkObjectForWinner : function ( obj ) {
 
                 _.each( obj, function ( str, i ) {
@@ -182,12 +226,21 @@
                     // Lets get an array to count
                     var pieces = str.split( ',' );
 
-
-                    // Drop the last element, its the trailing , from the check
+                    // Drop the last element, its the trailing ',' from the string concat
                     pieces.pop();
 
-                    if ( (i == 'yellow' || i == 'red') && pieces.length >= 4 ) {
-                        console.log( 'possible winner' );
+                    if ( pieces.length >= 4 && (i == 'yellow' || i == 'red') ) {
+                        console.log('possible winner');
+//                        _(pieces.yellow ).every(function(x) {
+//
+//                            if(x == lastIndex + 1) {
+//                                count++;
+//                            }
+//                            else {
+//                                count = 0;
+//                            }
+//
+//                        });
                     }
 
                 } );
@@ -212,12 +265,11 @@
             },
             resetBoard : function () {
 
-                $( '#main' ).remove();
+                $( '#main' )[0].innerHTML = '';
 
-                var body = $( 'body' );
+                var $body = $( 'body' );
 
-                body.removeClass( 'tie-game' );
-                $( '<div id="main">' ).prependTo( body );
+                $body.removeClass( 'tie-game' );
 
                 connectFour.init();
             }
