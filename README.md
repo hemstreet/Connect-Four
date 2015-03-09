@@ -1,5 +1,16 @@
 Connect 4 Game in JS:
 
+![Connect Four Screenshot](https://github.com/hemstreet/Connect-Four/tree/master/public/images/screenshot.png "Connect Four screenshot")
+
+Description
+ 
+Connect Four (also known as Captain's Mistress, Four Up, Plot Four, Find Four, Fourplay, Four in a Row and Four in a Line) 
+is a two-player connection game in which the players first choose a color and then take turns dropping colored discs from 
+the top into a seven-column, six-row vertically suspended grid. The pieces fall straight down, occupying the next available 
+space within the column. The objective of the game is to connect four of one's own discs of the same color next to each 
+other vertically, horizontally, or diagonally before your opponent. Connect Four is a strongly solved game. The first 
+player can always win by playing the right moves.
+
 Guidelines / Rules:
 - [x] Before you start, send me a time estimate
 - [x] Get the game to a working state
@@ -14,12 +25,3 @@ Bonus (totally optional):
 - [x] Add a "Game Over" screen
 - [x] Track score, making it persistent (w/o a backend)
 - [ ] use only ES6
-
-Description
- 
-you are to finalize the current code, the end goal is a fully functional connect-four game
-while documenting each of your steps committing this to an either public or private git repo
-(which you need to make available to the reviewer), the game should be a user vs user game on which
-you click a column and drops a coin, first to click is yellow
- 
-(Reference: http://en.wikipedia.org/wiki/Connect_Four_)

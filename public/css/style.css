@@ -5,6 +5,9 @@ body.dialog-open .underlay,
 body.dialog-open .dialog {
   display: block;
 }
+h1 {
+  color: #fff;
+}
 .underlay,
 .dialog {
   display: none;
@@ -27,6 +30,9 @@ body.dialog-open .dialog {
   /* Safari */
   transform: scale(2, 2);
 }
+.piece-indicator {
+  margin: 15px;
+}
 .item {
   border-radius: 55px;
   background-color: #fff;
@@ -34,6 +40,8 @@ body.dialog-open .dialog {
   height: 40px;
   float: left;
   border: 5px solid #202a40;
+  -webkit-box-shadow: inset 2px 2px 5px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 2px 2px 5px 1px rgba(0, 0, 0, 0.2);
 }
 .item.yellow {
   background-color: #d9cc1a;

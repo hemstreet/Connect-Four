@@ -7,6 +7,7 @@
         yellowScore: 0,
         redScore: 0,
         $body: $('body'),
+        isReset: false,
 
         init: function () {
 
@@ -19,6 +20,9 @@
             // Setup click handlers
             this.setupMenuOptions();
             this.setupDialogClickHandler();
+
+            // Lets add the fancy current player indicator
+            this.setupCurrentPieceIndicator();
 
         },
         buildGameBoard: function () {
@@ -46,16 +50,20 @@
         clickHandler: function (event) {
             event.preventDefault();
 
+            // parseInt [data-col] string
             var col = parseInt($(this).attr('data-col'));
 
             for (var row = connectFour.tableSize[1] - 1; row >= 0; row--) {
 
+                // Query for piece slot
                 var $slot = $('[data-col="' + col + '"][data-row="' + row + '"]');
 
+                // Is there a playable position in the column
                 if (connectFour.positions[0][col] !== 0) {
-                    console.log('invalid move');
+                    connectFour.showDialog('Invalid move, please try again');
                     break;
                 }
+
                 if (connectFour.positions[row][col] == 0) {
 
                     $slot.addClass(connectFour.currentPlayer);
@@ -66,7 +74,14 @@
                     connectFour.checkVertical(col);
                     connectFour.checkDiagonal();
 
-                    connectFour.currentPlayer = connectFour.currentPlayer == 'yellow' ? 'red' : 'yellow';
+                    if(!connectFour.isReset) {
+                        connectFour.currentPlayer = connectFour.currentPlayer == 'yellow' ? 'red' : 'yellow';
+                    }
+                    else {
+                        connectFour.isReset = false;
+                    }
+
+                    connectFour.checkPieceIndicator();
 
                     if (row == 0) {
                         connectFour.checkTie();
@@ -101,13 +116,31 @@
 
         },
         setupPlayerDetails: function () {
+
+            // Check local storage for saved value, otherwise 0
             this.yellowScore = parseInt(localStorage['yellowScore']) || 0;
-
-            $('[data-score="yellow"]')[0].innerHTML = this.yellowScore;
-
             this.redScore = parseInt(localStorage['redScore']) || 0;
 
+            // Set the value we get to the dom element
+            $('[data-score="yellow"]')[0].innerHTML = this.yellowScore;
             $('[data-score="red"]')[0].innerHTML = this.redScore;
+
+        },
+        setupCurrentPieceIndicator: function() {
+
+        },
+        checkPieceIndicator: function() {
+            var $pieceIndicator = $('.piece-indicator');
+
+            if(this.currentPlayer == 'yellow') {
+                $pieceIndicator .addClass('yellow');
+                $pieceIndicator .removeClass('red');
+            }
+            else
+            {
+                $pieceIndicator .addClass('red');
+                $pieceIndicator .removeClass('yellow');
+            }
 
         },
         checkHorizontal: function (row) {
@@ -216,32 +249,43 @@
                 // Drop the last element, its the trailing ',' from the string concat
                 pieces.pop();
 
+                // If we have four values, and that value is either yellow or red lets run the winning logic check
                 if (pieces.length >= 4 && (i == 'yellow' || i == 'red')) {
+
 
                     for (var k = 0; k <= pieces.length; k++) {
 
+                        // Have we already won?
                         if (winnerCount >= 4) {
                             break;
                         }
 
+                        // Have we reached the end of the array?
                         if (pieces[k + 1] == undefined) {
+                            // Lets check the last element to the one from before
                             if (pieces[k - 1] !== undefined && Math.abs(pieces[k - 1] - pieces[k]) == 1) {
+                                // Looks good, lets give them a winnerCount increment
                                 winnerCount++;
                             }
+                            // We have reached the end of the array, lets get out of here
                             break;
                         }
 
+                        // Is the value of the two cells greater than 1? ( This would mean we are not in sequential order )
                         if (Math.abs(pieces[k] - pieces[k + 1]) !== 1) {
 
+                            // Reset winner Count and continue checking for a possible win senario
                             winnerCount = 0;
                             continue;
                         }
                         else {
+                            // It matched!
                             winnerCount++;
                         }
 
                     }
 
+                    // Hooray, Someone has won!
                     if (winnerCount >= 4) {
                         this.showWinner();
                     }
@@ -250,8 +294,22 @@
             }.bind(this));
 
         },
+        showWinner: function () {
+
+            this.isReset = true;
+
+            // Increment the score to account for the new win!
+            this.incrementPlayerScore(this.currentPlayer);
+
+            // Show a dialog to let the player know they have won! Congrats!
+            this.showDialog(this.currentPlayer + ' won!');
+
+            // Lets reset the board for a new game!
+            this.resetBoard();
+        },
         incrementPlayerScore: function (player) {
 
+            // Lets increment, save the value to local storage and updating the dom for the desired player
             if (player == 'yellow') {
                 this.yellowScore++;
                 localStorage.setItem('yellowScore', this.yellowScore);
@@ -264,37 +322,37 @@
             }
 
         },
-        showWinner: function () {
-
-            this.incrementPlayerScore(this.currentPlayer);
-
-            this.showDialog(this.currentPlayer + ' Won');
-
-            this.resetBoard();
-        },
         checkTie: function () {
 
             var isTie = true;
 
             _(this.positions).every(function (i) {
+                // Check for playable piece slots in the rows
                 if (i.indexOf(0) > -1) {
+                    // Found a playable piece, lets get out of here!
                     isTie = false;
                     return false;
                 }
             });
 
             if (isTie) {
+                // The game was a tie, no more moves are available, lets let the players know
                 this.showDialog('Tie Game');
+
+                // Lets also reset the game board for them
                 this.resetBoard();
             }
 
         },
         showDialog: function (content) {
 
+            // Grab the dialog dom
             var $dialog = $('.dialog');
 
+            // Set the dialog content to whatever message we want
             $('.dialog-content')[0].innerHTML = content;
 
+            // Lets make sure the dialog is centered in the page
             $dialog.css({
                 'width': $dialog.outerWidth(),
                 'margin-top': -$dialog.outerHeight() / 2,
@@ -308,22 +366,21 @@
 
             $('#main')[0].innerHTML = '';
 
-            // @TODO Investigate after win first game chip is set to red
-            // Ensure player is set to yellow next game
-            this.currentPlayer = 'yellow';
-
             this.buildGameBoard();
             this.setupPlayerDetails();
         },
 
         resetGame: function () {
 
+            // Lets reset the game back to the default by setting player scored to 0
             this.yellowScore = 0;
             this.redScore = 0;
 
+            // Reset local storage variables
             localStorage.setItem('yellowScore', 0);
             localStorage.setItem('redScore', 0);
 
+            // We can't forget to update the dom for the user
             $('[data-score="yellow"]').innerHTML = 0;
             $('[data-score="red"]').innerHTML = 0;
 
@@ -332,6 +389,7 @@
         }
     };
 
+    // Lets kick off our script to create our board and start the game!
     connectFour.init();
 
 })(jQuery);
