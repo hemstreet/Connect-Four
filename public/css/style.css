@@ -10,6 +10,11 @@ body {
   left: 50%;
   top: 50%;
   margin: -150px 0 0 -175px;
+  -ms-transform: scale(2, 2);
+  /* IE 9 */
+  -webkit-transform: scale(2, 2);
+  /* Safari */
+  transform: scale(2, 2);
 }
 .item {
   border-radius: 55px;
@@ -45,4 +50,22 @@ a {
 }
 .score[data-score="red"] {
   color: #ff0000;
+}
+@media (max-width: 970px) {
+  #main {
+    -ms-transform: scale(1.5, 1.5);
+    /* IE 9 */
+    -webkit-transform: scale(1.5, 1.5);
+    /* Safari */
+    transform: scale(1.5, 1.5);
+  }
+}
+@media (max-width: 750px) {
+  #main {
+    -ms-transform: scale(1, 1);
+    /* IE 9 */
+    -webkit-transform: scale(1, 1);
+    /* Safari */
+    transform: scale(1, 1);
+  }
 }
