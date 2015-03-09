@@ -1,6 +1,6 @@
 Connect 4 Game in JS:
 
-![Connect Four Screenshot](https://github.com/hemstreet/Connect-Four/tree/master/public/images/screenshot.png "Connect Four screenshot")
+![Connect Four Screenshot](https://github.com/hemstreet/Connect-Four/blob/master/public/images/screenshot.png?raw=true "Connect Four screenshot")
 
 Description
  
