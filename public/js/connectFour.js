@@ -22,15 +22,21 @@
 
         },
         buildGameBoard: function () {
+            // Loops through Y
             _(this.tableSize[1]).times(function (row) {
+                // build positions array rows
                 this.positions[row] = [];
+                // Loops through X
                 _(this.tableSize[0]).times(function (col) {
+                    // Append circle game pieces to #main and initiate the click handlers
                     $('#main').append(this.createConnectCircle(col, row));
+                    // Build Positions array columns
                     this.positions[row][col] = 0;
                 }.bind(this));
             }.bind(this));
         },
         createConnectCircle: function (col, row) {
+            // return a new jquery element w/ origin data attributes and click handler
             return $('<div>')
                 .addClass('item')
                 .attr('data-col', col)
@@ -92,6 +98,16 @@
                 connectFour.$body.removeClass('dialog-open');
 
             });
+
+        },
+        setupPlayerDetails: function () {
+            this.yellowScore = parseInt(localStorage['yellowScore']) || 0;
+
+            $('[data-score="yellow"]')[0].innerHTML = this.yellowScore;
+
+            this.redScore = parseInt(localStorage['redScore']) || 0;
+
+            $('[data-score="red"]')[0].innerHTML = this.redScore;
 
         },
         checkHorizontal: function (row) {
@@ -234,6 +250,28 @@
             }.bind(this));
 
         },
+        incrementPlayerScore: function (player) {
+
+            if (player == 'yellow') {
+                this.yellowScore++;
+                localStorage.setItem('yellowScore', this.yellowScore);
+                $('[data-score="yellow"]')[0].innerHTML = this.yellowScore;
+            }
+            else {
+                this.redScore++;
+                localStorage.setItem('redScore', this.redScore);
+                $('[data-score="red"]')[0].innerHTML = this.redScore;
+            }
+
+        },
+        showWinner: function () {
+
+            this.incrementPlayerScore(this.currentPlayer);
+
+            this.showDialog(this.currentPlayer + ' Won');
+
+            this.resetBoard();
+        },
         checkTie: function () {
 
             var isTie = true;
@@ -251,24 +289,6 @@
             }
 
         },
-        showWinner: function () {
-
-            this.incrementPlayerScore(this.currentPlayer);
-
-            this.showDialog(this.currentPlayer + ' Won');
-
-            this.resetBoard();
-        },
-        setupPlayerDetails: function () {
-            this.yellowScore = parseInt(localStorage['yellowScore']) || 0;
-
-            $('[data-score="yellow"]')[0].innerHTML = this.yellowScore;
-
-            this.redScore = parseInt(localStorage['redScore']) || 0;
-
-            $('[data-score="red"]')[0].innerHTML = this.redScore;
-
-        },
         showDialog: function (content) {
 
             var $dialog = $('.dialog');
@@ -282,20 +302,6 @@
             });
 
             this.$body.addClass('dialog-open');
-
-        },
-        incrementPlayerScore: function (player) {
-
-            if (player == 'yellow') {
-                this.yellowScore++;
-                localStorage.setItem('yellowScore', this.yellowScore);
-                $('[data-score="yellow"]')[0].innerHTML = this.yellowScore;
-            }
-            else {
-                this.redScore++;
-                localStorage.setItem('redScore', this.redScore);
-                $('[data-score="red"]')[0].innerHTML = this.redScore;
-            }
 
         },
         resetBoard: function () {

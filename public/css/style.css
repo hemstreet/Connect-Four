@@ -63,6 +63,26 @@ a {
   background: #fff;
   border-color: #202a40;
 }
+.score-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: inline-block;
+}
+.score-container .score {
+  display: inline-block;
+  padding: 0 15px;
+  margin: 15px 0;
+}
+.score-container .score[data-score="yellow"] {
+  color: #d9cc1a;
+  border-right: 1px solid #fff;
+}
+.score-container .score[data-score="red"] {
+  color: #fc4349;
+  margin-left: -4px;
+}
 .underlay {
   position: absolute;
   top: 0;
@@ -99,25 +119,20 @@ a {
   background: #fff;
   border-color: #202a40;
 }
-.score-container {
+.settings-container {
+  display: inline-block;
+  padding: 0;
+  margin: 0 0 0 15px;
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: inline-block;
+  bottom: 15px;
+  right: 15px;
 }
-.score-container .score {
-  display: inline-block;
-  padding: 0 15px;
-  margin: 15px 0;
+.settings-container li {
+  list-style-type: none;
+  margin-bottom: 15px;
 }
-.score-container .score[data-score="yellow"] {
-  color: #d9cc1a;
-  border-right: 1px solid #fff;
-}
-.score-container .score[data-score="red"] {
-  color: #fc4349;
-  margin-left: -4px;
+.settings-container li:last-of-type {
+  margin: 0;
 }
 @media (max-width: 970px) {
   #main {

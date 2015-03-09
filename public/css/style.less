@@ -1,11 +1,7 @@
-//@yellow: #D9CC1A;
-//@red : #D93654;
-//@mainColor : #202A40;
-
+// Setup global variables
 @yellow: #D9CC1A;
 @red : #FC4349;
 @mainColor : #202A40;
-
 @transitionSpeed : 0.3s;
 
 body {
@@ -79,6 +75,27 @@ a {
 		border-color: @mainColor;
 	}
 }
+.score-container {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	display: inline-block;
+	.score {
+		display: inline-block;
+		padding: 0 15px;
+		margin: 15px 0;
+		&[data-score="yellow"] {
+			color: @yellow;
+			border-right: 1px solid #fff;
+		}
+		&[data-score="red"] {
+			color: @red;
+			margin-left: -4px;
+		}
+	}
+}
+
 
 .underlay {
 	position: absolute;
@@ -117,23 +134,19 @@ a {
 		}
 	}
 }
-.score-container {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	right: 0;
+
+.settings-container {
 	display: inline-block;
-	.score {
-		display: inline-block;
-		padding: 0 15px;
-		margin: 15px 0;
-		&[data-score="yellow"] {
-			color: @yellow;
-			border-right: 1px solid #fff;
-		}
-		&[data-score="red"] {
-			color: @red;
-			margin-left: -4px;
+	padding: 0;
+	margin: 0 0 0 15px;
+	position: absolute;
+	bottom: 15px;
+	right: 15px;
+	li {
+		list-style-type: none;
+		margin-bottom: 15px;
+		&:last-of-type {
+			margin: 0;
 		}
 	}
 }
