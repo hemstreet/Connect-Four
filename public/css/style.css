@@ -1,0 +1,48 @@
+body {
+  background: blue;
+}
+#main {
+  background-color: blue;
+  width: 350px;
+  height: 300px;
+  overflow: hidden;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: -150px 0 0 -175px;
+}
+.item {
+  border-radius: 55px;
+  background-color: #fff;
+  width: 40px;
+  height: 40px;
+  float: left;
+  border: 5px solid blue;
+}
+.item.red {
+  background-color: #ff0000;
+}
+.item.yellow {
+  background-color: #ffff00;
+}
+.item:hover {
+  cursor: pointer;
+}
+a {
+  color: #fff;
+  padding: 15px;
+  display: inline-block;
+  text-decoration: none;
+  border: 1px solid #fff;
+}
+.score {
+  background: #000;
+  padding: 15px;
+  display: inline-block;
+}
+.score[data-score="yellow"] {
+  color: #ffff00;
+}
+.score[data-score="red"] {
+  color: #ff0000;
+}
