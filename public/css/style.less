@@ -1,13 +1,34 @@
-@yellow: #FFFF00;
-@red : #FF0000;
-@blue : blue;
+//@yellow: #D9CC1A;
+//@red : #D93654;
+//@mainColor : #202A40;
+
+@yellow: #D9CC1A;
+@red : #FC4349;
+@mainColor : #202A40;
+
+@transitionSpeed : 0.3s;
 
 body {
-	background: @blue;
+	background: @mainColor;
+	&.dialog-open {
+		.underlay,
+		.dialog {
+			display: block;
+		}
+	}
+}
+
+.underlay,
+.dialog {
+	display: none;
+}
+
+.container {
+	text-align: center;
 }
 
 #main {
-	background-color: @blue;
+	background-color: @mainColor;
 	width: 350px;
 	height: 300px;
 	overflow: hidden;
@@ -26,12 +47,12 @@ body {
 	width: 40px;
 	height: 40px;
 	float: left;
-	border: 5px solid @blue;
-	&.red {
-		background-color: @red;
-	}
+	border: 5px solid @mainColor;
 	&.yellow {
 		background-color: @yellow;;
+	}
+	&.red {
+		background-color: @red;
 	}
 	&:hover {
 		cursor: pointer;
@@ -40,21 +61,80 @@ body {
 
 a {
 	color: #fff;
-	padding: 15px;
-	display: inline-block;
 	text-decoration: none;
-	border: 1px solid #fff;
 }
 
-.score {
-	background: #000;
+.button {
 	padding: 15px;
 	display: inline-block;
-	&[data-score="yellow"] {
-		color: @yellow;
+	color: #fff;
+	border: 1px solid #ffffff;
+	-webkit-transition: @transitionSpeed ease-in-out;
+	-moz-transition: @transitionSpeed ease-in-out;
+	-o-transition: @transitionSpeed ease-in-out;
+	transition: @transitionSpeed ease-in-out;
+	&:hover {
+		color: @mainColor;
+		background: #fff;
+		border-color: @mainColor;
 	}
-	&[data-score="red"] {
-		color: @red;
+}
+
+.underlay {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background: rgba(0,0,0,0.5);
+}
+
+.dialog {
+	position: absolute;
+	z-index: 1;
+	background: #fff;
+	top: 50%;
+	left: 50%;
+	color: @mainColor;
+	padding: 15px;
+	a {
+		color: @mainColor;
+	}
+	.dialog-content {
+		text-transform: capitalize;
+		text-align: center;
+	}
+	.button {
+		background: @mainColor;
+		color: #fff;
+		margin-top: 10px;
+		text-align: center;
+		display: block;
+		&:hover {
+			color: @mainColor;
+			background: #fff;
+			border-color: @mainColor;
+		}
+	}
+}
+.score-container {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	display: inline-block;
+	.score {
+		display: inline-block;
+		padding: 0 15px;
+		margin: 15px 0;
+		&[data-score="yellow"] {
+			color: @yellow;
+			border-right: 1px solid #fff;
+		}
+		&[data-score="red"] {
+			color: @red;
+			margin-left: -4px;
+		}
 	}
 }
 

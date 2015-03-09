@@ -1,24 +1,24 @@
 (function ($) {
 
     var connectFour = {
-        tableSize:      [7, 6],
+        tableSize: [7, 6],
         currentPlayer: 'yellow',
-        positions:      [],
-        yellowScore:    0,
-        yellowName:     0,
-        redScore:       0,
-        redName:        0,
+        positions: [],
+        yellowScore: 0,
+        redScore: 0,
+        $body: $('body'),
 
         init: function () {
 
-            // Generate Game board
+            // Generate Game board & setup piece click handler
             this.buildGameBoard();
 
             // Is there scores set in local storage? otherwise lets start clean
             this.setupPlayerDetails();
 
-            // Setup click handlers for menu items
+            // Setup click handlers
             this.setupMenuOptions();
+            this.setupDialogClickHandler();
 
         },
         buildGameBoard: function () {
@@ -51,7 +51,9 @@
                     break;
                 }
                 if (connectFour.positions[row][col] == 0) {
+
                     $slot.addClass(connectFour.currentPlayer);
+
                     connectFour.positions[row][col] = connectFour.currentPlayer;
 
                     connectFour.checkHorizontal(row);
@@ -82,47 +84,48 @@
             });
 
         },
+        setupDialogClickHandler: function () {
+
+            $('.close-dialog').on('click', function (e) {
+                e.preventDefault();
+
+                connectFour.$body.removeClass('dialog-open');
+
+            });
+
+        },
         checkHorizontal: function (row) {
 
-            // No possible winner if the 4th column is empty
-            if (this.positions[row][3] !== 0) {
+            var count = {
+                'red': '',
+                'yellow': '',
+                0: ''
+            };
 
-                var count = {
-                    'red': '',
-                    'yellow': '',
-                    0: ''
-                };
+            for (var col = 0; col < this.tableSize[0]; col++) {
 
-                for (var col = 0; col < this.tableSize[0]; col++) {
+                count[this.positions[row][col]] += col + ',';
 
-                    count[this.positions[row][col]] += col + ',';
-
-                }
-
-                this.checkObjectForWinner(count);
             }
+
+            this.checkObjectForWinner(count);
 
         },
         checkVertical: function (col) {
 
+            var count = {
+                'red': '',
+                'yellow': '',
+                0: ''
+            };
 
-            // No possible winner if the 4th column is empty
-            if (this.positions[3][col] !== 0) {
+            for (var row = 0; row < this.tableSize[1]; row++) {
 
-                var count = {
-                    'red': '',
-                    'yellow': '',
-                    0: ''
-                };
+                count[this.positions[row][col]] += row + ',';
 
-                for (var row = 0; row < this.tableSize[1]; row++) {
-
-                    count[this.positions[row][col]] += row + ',';
-
-                }
-
-                this.checkObjectForWinner(count);
             }
+
+            this.checkObjectForWinner(count);
 
         },
         checkDiagonal: function () {
@@ -201,6 +204,10 @@
 
                     for (var k = 0; k <= pieces.length; k++) {
 
+                        if (winnerCount >= 4) {
+                            break;
+                        }
+
                         if (pieces[k + 1] == undefined) {
                             if (pieces[k - 1] !== undefined && Math.abs(pieces[k - 1] - pieces[k]) == 1) {
                                 winnerCount++;
@@ -239,7 +246,7 @@
             });
 
             if (isTie) {
-                $('body').addClass('tie-game');
+                this.showDialog('Tie Game');
                 this.resetBoard();
             }
 
@@ -248,18 +255,33 @@
 
             this.incrementPlayerScore(this.currentPlayer);
 
+            this.showDialog(this.currentPlayer + ' Won');
+
             this.resetBoard();
         },
         setupPlayerDetails: function () {
-            this.yellowName = localStorage['yellowName'] || 'Anonymous';
             this.yellowScore = parseInt(localStorage['yellowScore']) || 0;
 
             $('[data-score="yellow"]')[0].innerHTML = this.yellowScore;
 
-            this.redName = parseInt(localStorage['redName']) || 'Anonymous';
             this.redScore = parseInt(localStorage['redScore']) || 0;
 
             $('[data-score="red"]')[0].innerHTML = this.redScore;
+
+        },
+        showDialog: function (content) {
+
+            var $dialog = $('.dialog');
+
+            $('.dialog-content')[0].innerHTML = content;
+
+            $dialog.css({
+                'width': $dialog.outerWidth(),
+                'margin-top': -$dialog.outerHeight() / 2,
+                'margin-left': -$dialog.outerWidth() / 2
+            });
+
+            this.$body.addClass('dialog-open');
 
         },
         incrementPlayerScore: function (player) {
@@ -280,15 +302,12 @@
 
             $('#main')[0].innerHTML = '';
 
-            var $body = $('body');
-
-            $body.removeClass('tie-game');
-
             // @TODO Investigate after win first game chip is set to red
             // Ensure player is set to yellow next game
             this.currentPlayer = 'yellow';
 
-            this.init();
+            this.buildGameBoard();
+            this.setupPlayerDetails();
         },
 
         resetGame: function () {

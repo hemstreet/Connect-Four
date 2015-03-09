@@ -3,7 +3,7 @@ Connect 4 Game in JS:
 Guidelines / Rules:
 - [x] Before you start, send me a time estimate
 - [x] Get the game to a working state
-- [ ] Polish UI/UX as much as possible
+- [x] Polish UI/UX as much as possible
 - [x] Make it fill the entire screen
 - [x] Make it responsive down to mobile
 - [x] assume modern browsers
@@ -11,8 +11,8 @@ Guidelines / Rules:
 Bonus (totally optional):
 - [ ] Add falling animation (circles falling down)
 - [ ] AI for User vs AI games
-- [ ] Add a "Game Over" screen
-- [ ] Track score, making it persistent (w/o a backend)
+- [x] Add a "Game Over" screen
+- [x] Track score, making it persistent (w/o a backend)
 - [ ] use only ES6
 
 Description

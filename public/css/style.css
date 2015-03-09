@@ -1,8 +1,19 @@
 body {
-  background: blue;
+  background: #202a40;
+}
+body.dialog-open .underlay,
+body.dialog-open .dialog {
+  display: block;
+}
+.underlay,
+.dialog {
+  display: none;
+}
+.container {
+  text-align: center;
 }
 #main {
-  background-color: blue;
+  background-color: #202a40;
   width: 350px;
   height: 300px;
   overflow: hidden;
@@ -22,34 +33,91 @@ body {
   width: 40px;
   height: 40px;
   float: left;
-  border: 5px solid blue;
-}
-.item.red {
-  background-color: #ff0000;
+  border: 5px solid #202a40;
 }
 .item.yellow {
-  background-color: #ffff00;
+  background-color: #d9cc1a;
+}
+.item.red {
+  background-color: #fc4349;
 }
 .item:hover {
   cursor: pointer;
 }
 a {
   color: #fff;
-  padding: 15px;
-  display: inline-block;
   text-decoration: none;
-  border: 1px solid #fff;
 }
-.score {
-  background: #000;
+.button {
   padding: 15px;
   display: inline-block;
+  color: #fff;
+  border: 1px solid #ffffff;
+  -webkit-transition: 0.3s ease-in-out;
+  -moz-transition: 0.3s ease-in-out;
+  -o-transition: 0.3s ease-in-out;
+  transition: 0.3s ease-in-out;
 }
-.score[data-score="yellow"] {
-  color: #ffff00;
+.button:hover {
+  color: #202a40;
+  background: #fff;
+  border-color: #202a40;
 }
-.score[data-score="red"] {
-  color: #ff0000;
+.underlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+.dialog {
+  position: absolute;
+  z-index: 1;
+  background: #fff;
+  top: 50%;
+  left: 50%;
+  color: #202a40;
+  padding: 15px;
+}
+.dialog a {
+  color: #202a40;
+}
+.dialog .dialog-content {
+  text-transform: capitalize;
+  text-align: center;
+}
+.dialog .button {
+  background: #202a40;
+  color: #fff;
+  margin-top: 10px;
+  text-align: center;
+  display: block;
+}
+.dialog .button:hover {
+  color: #202a40;
+  background: #fff;
+  border-color: #202a40;
+}
+.score-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: inline-block;
+}
+.score-container .score {
+  display: inline-block;
+  padding: 0 15px;
+  margin: 15px 0;
+}
+.score-container .score[data-score="yellow"] {
+  color: #d9cc1a;
+  border-right: 1px solid #fff;
+}
+.score-container .score[data-score="red"] {
+  color: #fc4349;
+  margin-left: -4px;
 }
 @media (max-width: 970px) {
   #main {

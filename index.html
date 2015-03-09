@@ -8,20 +8,32 @@
     <link rel="stylesheet" type="text/css" href="public/css/style.css">
 </head>
 <body>
-<div class="container">
-    <div id="main"></div>
-    <div class="score-container">
-        <div class="score" data-score="yellow">0</div>
-        <div class="score" data-score="red">0</div>
+    <div class="container">
+        <div id="main"></div>
+        <div class="score-container">
+            <div class="score" data-score="yellow">0</div>
+            <div class="score" data-score="red">0</div>
+        </div>
     </div>
-</div>
-<a href="#" class="reset-board">Reset Board</a>
-<a href="#" class="reset-game">Reset Game</a>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.2/underscore-min.js"></script>
-<script src="public/js/connectFour.js"></script>
 
-<!--<script src="local/jquery.min.js"></script>-->
-<!--<script src="local/underscore-min.js"></script>-->
+    <div class="settings-container">
+        <ul>
+            <li><a href="#" class="button reset-board">Reset Board</a></li>
+            <li><a href="#" class="button reset-game">Reset Game</a></li>
+        </ul>
+    </div>
+
+    <div class="underlay"></div>
+    <div class="dialog">
+        <div class="dialog-content"></div>
+        <a href="#" class="button close-dialog">Continue</a>
+    </div>
+
+    <!--<script src="local/jquery.min.js"></script>-->
+    <!--<script src="local/underscore-min.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.2/underscore-min.js"></script>
+    <script src="public/js/connectFour.js"></script>
+
 </body>
 </html>
