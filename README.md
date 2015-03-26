@@ -2,6 +2,8 @@ Connect 4 Game in JS:
 
 ![Connect Four Screenshot](https://github.com/hemstreet/Connect-Four/blob/master/public/images/screenshot.png?raw=true "Connect Four screenshot")
 
+[Demo](http://jonhemstreet.com/connectFour/)
+
 Description
  
 Connect Four (also known as Captain's Mistress, Four Up, Plot Four, Find Four, Fourplay, Four in a Row and Four in a Line) 
